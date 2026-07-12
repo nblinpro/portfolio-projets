@@ -21,6 +21,6 @@ jobs:
             --offline
             --no-progress
             --exclude-mail
-            --exclude 'mastere/openstack/.*'
+            --exclude-path mastere/openstack.html
             './**/*.html'
           fail: true
