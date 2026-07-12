@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GridBook — Architecture Souveraine — Nicolas Blin</title>
+  <meta name="description" content="GridBook — plateforme de pari full-stack auto-hébergée sur Proxmox. FastAPI, React, PostgreSQL, Cloudflare Tunnel. Mastère M1.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="ambient-bg"></div>
+
+<header class="site-header">
+  <a href="../index.html" class="logo">Nicolas<span class="dot">.SI</span></a>
+  <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <nav class="site-nav" id="siteNav">
+    <ul>
+      <li><a href="../index.html">Accueil</a></li>
+      <li><a href="../parcours.html">Parcours</a></li>
+      <li><a href="../projets.html">Projets</a></li>
+      <li><a href="../contact.html" class="nav-cta">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<nav class="breadcrumb">
+  <a href="index.html">Mastère</a>
+  <i class="fas fa-chevron-right"></i>
+  <span>GridBook — Architecture Souveraine</span>
+</nav>
+
+<div class="page-hero">
+  <span class="hero-tag"><i class="fas fa-server"></i> Mastère M1 · Lab Innovation</span>
+  <h1>GridBook <span class="gradient-text">Architecture Souveraine</span></h1>
+  <p>Plateforme de pari sportif full-stack auto-hébergée sur mon serveur Proxmox personnel — architecture microservices, sécurisation Cloudflare, backend FastAPI et frontend React.</p>
+</div>
+
+<div class="page-wrapper">
+
+  <section class="section">
+    <div class="section-header">
+      <span class="section-tag"><i class="fas fa-flask"></i> Projet Lab</span>
+      <h2>Présentation du <span class="accent">projet</span></h2>
+      <p>Une plateforme conçue de bout en bout, de l'hyperviseur jusqu'à l'interface utilisateur.</p>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <p>GridBook est une plateforme de pari sportif full-stack développée et auto-hébergée sur mon serveur Proxmox personnel. Le projet couvre l'ensemble de la chaîne technique : virtualisation, containerisation, développement backend/frontend, sécurisation et monitoring.</p>
+        <p>L'objectif principal est d'explorer l'architecture microservices dans un environnement souverain — sans dépendance à des services cloud tiers. Les services sont exposés au public via Cloudflare Tunnel, sans qu'aucun port ne soit ouvert directement sur le serveur.</p>
+        <div class="tags">
+          <span class="tag tag--accent">Proxmox VE</span>
+          <span class="tag tag--accent">FastAPI</span>
+          <span class="tag tag--accent">React</span>
+          <span class="tag tag--accent">PostgreSQL</span>
+          <span class="tag tag--accent">Cloudflare</span>
+          <span class="tag tag--accent">Docker</span>
+          <span class="tag tag--accent">Nginx</span>
+        </div>
+        <div class="hero-cta">
+          <a href="https://github.com/nblinpro" target="_blank" rel="noopener" class="btn btn-outline btn-sm"><i class="fab fa-github"></i> GitHub</a>
+        </div>
+      </div>
+
+      <div>
+        <p class="tech-cat"><i class="fas fa-layer-group"></i> Stack technique</p>
+        <div class="tech-row">
+          <div class="tech-chip"><img src="https://cdn.simpleicons.org/proxmox/E57000" alt="Proxmox VE"><span>Proxmox VE</span></div>
+          <div class="tech-chip"><img src="https://cdn.simpleicons.org/fastapi/009688" alt="FastAPI"><span>FastAPI</span></div>
+          <div class="tech-chip"><img src="https://cdn.simpleicons.org/react/61DAFB" alt="React"><span>React + Vite</span></div>
+          <div class="tech-chip"><img src="https://cdn.simpleicons.org/postgresql/4169E1" alt="PostgreSQL"><span>PostgreSQL</span></div>
+          <div class="tech-chip"><img src="https://cdn.simpleicons.org/cloudflare/F38020" alt="Cloudflare"><span>Cloudflare Tunnel</span></div>
+        </div>
+        <div class="detail-block">
+          <ul class="check-list">
+            <li><i class="fas fa-check"></i><span><strong>Proxmox VE</strong> — hyperviseur, VMs et conteneurs LXC.</span></li>
+            <li><i class="fas fa-check"></i><span><strong>FastAPI (Python)</strong> — API REST asynchrone, gestion des paris et des comptes.</span></li>
+            <li><i class="fas fa-check"></i><span><strong>React + Vite</strong> — frontend SPA, interface utilisateur.</span></li>
+            <li><i class="fas fa-check"></i><span><strong>PostgreSQL</strong> — base de données relationnelle.</span></li>
+            <li><i class="fas fa-check"></i><span><strong>Cloudflare Tunnel</strong> — exposition sécurisée, aucun port ouvert.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="section-header">
+      <span class="section-tag"><i class="fas fa-sitemap"></i> Architecture</span>
+      <h2>Architecture <span class="accent">technique</span></h2>
+    </div>
+
+    <div class="grid-3">
+      <div class="card card--accent card--center">
+        <div class="card-icon-box"><i class="fas fa-layer-group"></i></div>
+        <h3>Virtualisation</h3>
+        <p>Proxmox VE héberge des VMs Linux Ubuntu dédiées — une VM par service principal pour l'isolation.</p>
+      </div>
+      <div class="card card--accent card--center">
+        <div class="card-icon-box"><i class="fab fa-docker"></i></div>
+        <h3>Containerisation</h3>
+        <p>Docker Compose orchestre les services applicatifs — backend, frontend, base de données et reverse proxy.</p>
+      </div>
+      <div class="card card--accent card--center">
+        <div class="card-icon-box"><i class="fas fa-shield-alt"></i></div>
+        <h3>Sécurisation</h3>
+        <p>Cloudflare Tunnel assure l'exposition publique sans ouvrir de ports — WAF et protection DDoS inclus.</p>
+      </div>
+    </div>
+
+    <div class="code-block">
+<pre>## Flux de données — GridBook
+
+Utilisateur
+  ↓ HTTPS
+Cloudflare Edge (WAF · DDoS · SSL termination)
+  ↓ Cloudflare Tunnel (Zero Trust)
+Nginx (reverse proxy · load balancer)
+  ↓ /api/*                    ↓ /*
+FastAPI (port 8000)     React (port 5173)
+  ↓
+PostgreSQL (port 5432 — privé)
+  ↓
+Proxmox VE (hyperviseur local)</pre>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="section-header">
+      <span class="section-tag"><i class="fas fa-list-check"></i> Fonctionnalités</span>
+      <h2>Fonctionnalités <span class="accent">développées</span></h2>
+    </div>
+
+    <div class="grid-2">
+      <div class="detail-block">
+        <h3><i class="fas fa-server"></i> Backend — FastAPI</h3>
+        <ul class="check-list">
+          <li><i class="fas fa-check"></i><span>API REST complète avec authentification JWT</span></li>
+          <li><i class="fas fa-check"></i><span>Gestion des comptes utilisateurs et des soldes</span></li>
+          <li><i class="fas fa-check"></i><span>Système de paris en temps réel (WebSocket)</span></li>
+          <li><i class="fas fa-check"></i><span>Calcul automatique des cotes et des résultats</span></li>
+          <li><i class="fas fa-check"></i><span>Documentation API automatique (Swagger UI)</span></li>
+        </ul>
+      </div>
+      <div class="detail-block">
+        <h3><i class="fab fa-react"></i> Frontend — React</h3>
+        <ul class="check-list">
+          <li><i class="fas fa-check"></i><span>Interface SPA avec React Router</span></li>
+          <li><i class="fas fa-check"></i><span>Gestion d'état avec React Context</span></li>
+          <li><i class="fas fa-check"></i><span>Tableau de bord utilisateur temps réel</span></li>
+          <li><i class="fas fa-check"></i><span>Design responsive et dark mode</span></li>
+          <li><i class="fas fa-check"></i><span>Build optimisé avec Vite</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="cta-block">
+      <h2>Explorer d'autres projets du <span class="accent">Mastère</span></h2>
+      <p>Retour à la vue d'ensemble des labs et projets techniques du Mastère Expert Cloud, Infrastructure &amp; Sécurité.</p>
+      <div class="btn-group">
+        <a href="index.html" class="btn btn-primary"><i class="fas fa-th"></i> Vue d'ensemble Mastère</a>
+        <a href="../contact.html" class="btn btn-outline"><i class="fas fa-envelope"></i> Me contacter</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-logo">Nicolas<span class="dot">.SI</span></div>
+      <p>Mastère Expert Cloud, Infrastructure &amp; Sécurité · Ynov Campus.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Mastère</h4>
+      <ul>
+        <li><a href="index.html">Vue d'ensemble</a></li>
+        <li><a href="monitoring.html">Prometheus/Grafana</a></li>
+        <li><a href="laravel.html">Laravel via Ansible</a></li>
+        <li><a href="samba.html">Samba</a></li>
+        <li><a href="openstack.html">OpenStack</a></li>
+        <li><a href="gridbook.html">GridBook</a></li>
+        <li><a href="virtualisation.html">Infra HA</a></li>
+        <li><a href="rapidsoft-cicd.html">RapidSoft DevSecOps</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <div class="social-links">
+        <a href="https://www.linkedin.com/in/nicolas-blin-6a5135218/" class="social-btn" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://github.com/nblinpro" class="social-btn" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="mailto:nicolas.blin.pro1@gmail.com" class="social-btn" aria-label="Email"><i class="far fa-envelope"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Nicolas Blin — Expert Architecture SI</p>
+    <span class="mono">Mastère</span>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+</body>
+</html>

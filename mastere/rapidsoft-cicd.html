@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RapidSoft DevSecOps — Pipeline CI/CD Sécurisé — Nicolas Blin</title>
+  <meta name="description" content="RapidSoft DevSecOps — pipeline CI/CD sécurisé sur GitLab avec Renovate, Trivy, Plumber et SBOM CycloneDX. Mastère Expert Cloud, Infrastructure &amp; Sécurité.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="ambient-bg"></div>
+
+<header class="site-header">
+  <a href="../index.html" class="logo">Nicolas<span class="dot">.SI</span></a>
+  <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <nav class="site-nav" id="siteNav">
+    <ul>
+      <li><a href="../index.html">Accueil</a></li>
+      <li><a href="../parcours.html">Parcours</a></li>
+      <li><a href="../projets.html">Projets</a></li>
+      <li><a href="../contact.html" class="nav-cta">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<nav class="breadcrumb">
+  <a href="index.html">Mastère</a>
+  <i class="fas fa-chevron-right"></i>
+  <span>RapidSoft — Pipeline CI/CD Sécurisé</span>
+</nav>
+
+<div class="stats-bar">
+  <div class="stats-bar-inner">
+    <div class="stat-item">
+      <div class="stat-value">5</div>
+      <div class="stat-label">CVE HIGH détectées</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">90s</div>
+      <div class="stat-label">Temps de détection</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">6/6</div>
+      <div class="stat-label">Score Plumber RSSI</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">0€</div>
+      <div class="stat-label">Coût d'outillage</div>
+    </div>
+  </div>
+</div>
+
+<div class="page-wrapper">
+
+  <section class="section">
+    <div class="section-header">
+      <div class="section-tag"><i class="fas fa-flask"></i> Projet DevSecOps</div>
+      <h2>Sécuriser le <span class="accent">cycle de développement</span></h2>
+      <p>RapidSoft, éditeur de logiciels pour les secteurs bancaire et assurantiel (100 collaborateurs, 50 développeurs), fait face à une hausse du trafic malveillant et à des incidents graves révélés via Bug Bounty.</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <p>La GAP Analysis menée par le RSSI a mis en évidence trois failles critiques : un SDLC sans sécurité intégrée, une méconnaissance OWASP côté développeurs et une absence totale d'automatisation.</p>
+        <p>Le projet répond en deux missions complémentaires : le patch management automatisé des dépendances et la mise en conformité du pipeline CI/CD GitLab.</p>
+        <div class="tags">
+          <span class="tag tag--accent">GitLab CI/CD</span>
+          <span class="tag tag--accent">Trivy</span>
+          <span class="tag tag--accent">Renovate Bot</span>
+          <span class="tag tag--accent">Plumber</span>
+          <span class="tag tag--accent">SBOM CycloneDX</span>
+          <span class="tag tag--accent">OWASP</span>
+          <span class="tag tag--accent">Node.js</span>
+        </div>
+        <div class="btn-group">
+          <a href="https://github.com/nblinpro" class="btn btn-outline btn-sm" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub</a>
+          <a href="#pipeline" class="btn btn-primary btn-sm"><i class="fas fa-arrow-down"></i> Voir le pipeline</a>
+        </div>
+      </div>
+      <div class="card">
+        <p class="tech-cat"><i class="fas fa-toolbox"></i> Stack DevSecOps</p>
+        <ul class="check-list">
+          <li><i class="fas fa-rotate"></i><span><strong>Renovate Bot</strong> — Merge Requests automatiques de patch, 60+ écosystèmes.</span></li>
+          <li><i class="fas fa-magnifying-glass"></i><span><strong>Trivy (Aqua Security)</strong> — SCA, scan de conteneurs et génération SBOM CycloneDX.</span></li>
+          <li><i class="fas fa-scale-balanced"></i><span><strong>Plumber</strong> — CI/CD Posture Management, contrôles CIS + OWASP CICD-SEC.</span></li>
+          <li><i class="fas fa-list-check"></i><span><strong>Dependency-Track (OWASP)</strong> — inventaire SBOM centralisé, gouvernance DORA.</span></li>
+          <li><i class="fab fa-gitlab"></i><span><strong>GitLab CI/CD</strong> — runner self-hosted, 5 stages, 7 jobs.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="section-header">
+      <div class="section-tag"><i class="fas fa-puzzle-piece"></i> Mission 1</div>
+      <h2>Patch Management <span class="accent">des Dépendances</span></h2>
+      <p>Une dépendance déclarée dans le <code>package.json</code> en cache souvent des dizaines d'autres, invisibles sans outillage dédié.</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <p class="tech-cat"><i class="fas fa-file-code"></i> Ce que le développeur déclare</p>
+        <div class="code-block">// package.json
+{
+  "dependencies": {
+    "express": "4.16.0"
+  }
+}
+
+→ 1 dépendance déclarée
+→ 0 vulnérabilité visible</div>
+      </div>
+      <div class="card">
+        <p class="tech-cat"><i class="fas fa-triangle-exclamation"></i> Ce qui est réellement installé</p>
+        <div class="code-block">// package-lock.json (extrait)
+accepts · array-flatten · body-parser
+cookie · debug · depd · destroy
+ee-first · encodeurl · escape-html
+finalhandler · fresh · http-errors
+iconv-lite · inherits · methods
+mime · negotiator · on-finished
+parseurl · path-to-regexp · qs · ...
+
+→ 50+ dépendances transitives
+→ 5 vulnérabilités HIGH cachées</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="detail-block">
+      <h3>Résultats Trivy sur Express 4.16.0</h3>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <h3>body-parser <span class="tag tag--accent">HIGH</span></h3>
+        <p><code>CVE-2024-45590</code> — Déni de service via parsing.</p>
+        <p>1.18.2 → 1.20.3</p>
+      </div>
+      <div class="card">
+        <h3>path-to-regexp <span class="tag tag--accent">HIGH</span></h3>
+        <p><code>CVE-2024-45296</code> — ReDoS via regex catastrophique.</p>
+        <p>0.1.7 → 0.1.10</p>
+      </div>
+      <div class="card">
+        <h3>path-to-regexp <span class="tag tag--accent">HIGH</span></h3>
+        <p><code>CVE-2024-52798</code> — Vulnérabilité d'expression régulière.</p>
+        <p>0.1.7 → 0.1.12</p>
+      </div>
+      <div class="card">
+        <h3>path-to-regexp <span class="tag tag--accent">HIGH</span></h3>
+        <p><code>CVE-2026-4867</code> — DoS par backtracking.</p>
+        <p>0.1.7 → 0.1.13</p>
+      </div>
+      <div class="card">
+        <h3>qs <span class="tag tag--accent">HIGH</span></h3>
+        <p><code>CVE-2022-24999</code> — Prototype poisoning Node.js.</p>
+        <p>6.5.1 → 6.5.3</p>
+      </div>
+    </div>
+
+    <div class="info-callout">
+      <i class="fas fa-circle-info"></i>
+      <p><strong>Politique RSSI :</strong> seuil de blocage fixé à CRITICAL. Les vulnérabilités HIGH génèrent une alerte et déclenchent l'ouverture automatique de Merge Requests Renovate. MTTR cible : 14 jours sur HIGH, 48h sur CRITICAL.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section" id="pipeline">
+    <div class="section-header">
+      <div class="section-tag"><i class="fas fa-gears"></i> Architecture</div>
+      <h2>Pipeline DevSecOps <span class="accent">en Production</span></h2>
+      <p>Runner GitLab self-hosted — 5 stages, 7 jobs, du commit à l'environnement de production.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <h3>test</h3>
+        <ul class="check-list">
+          <li><i class="fas fa-check"></i><span>unit_tests</span></li>
+          <li><i class="fas fa-check"></i><span>secret_detection</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>security</h3>
+        <ul class="check-list">
+          <li><i class="fas fa-check"></i><span>security_sca_scan</span></li>
+          <li><i class="fas fa-check"></i><span>license_check</span></li>
+          <li><i class="fas fa-check"></i><span>sast</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>compliance</h3>
+        <ul class="check-list">
+          <li><i class="fas fa-check"></i><span>pipeline_compliance_audit</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>sbom</h3>
+        <ul class="check-list">
+          <li><i class="fas fa-check"></i><span>generate_sbom</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>report</h3>
+        <ul class="check-list">
+          <li><i class="fas fa-check"></i><span>consolidate_report</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="detail-block">
+      <h3>Flux DevSecOps</h3>
+    </div>
+    <div class="code-block">Développeur
+  ↓ git commit (pre-commit hook : linting + gitleaks)
+Renovate Bot (scan des manifestes, MR auto de patch hebdomadaire)
+  ↓ push → pipeline déclenché
+Trivy SCA (CVE HIGH/CRITICAL, blocage si CRITICAL)
+  ↓
+Plumber (audit .gitlab-ci.yml, 6 règles RSSI)
+  ↓
+Trivy SBOM (CycloneDX → Dependency-Track)
+  ↓
+GitLab Environment (approbation manuelle → production)</div>
+
+    <div class="grid-3">
+      <div class="card card--center">
+        <div class="card-icon-box"><i class="fas fa-rotate"></i></div>
+        <h3>Renovate Bot</h3>
+        <p>Scanne les manifestes, ouvre des MR de patch automatiques avec changelogs. Auto-merge sur les patchs mineurs si les tests passent.</p>
+      </div>
+      <div class="card card--center">
+        <div class="card-icon-box"><i class="fas fa-shield-halved"></i></div>
+        <h3>Trivy + SAST</h3>
+        <p>Scan SCA à chaque commit, génération SBOM CycloneDX, vérification des licences GPL/AGPL. Blocage automatique sur CRITICAL.</p>
+      </div>
+      <div class="card card--center">
+        <div class="card-icon-box"><i class="fas fa-scale-balanced"></i></div>
+        <h3>Plumber</h3>
+        <p>Double rempart de conformité : contrôles CIS + OWASP officiels (88,9 %) et moteur RSSI custom à 6 règles RS-001 à RS-006 (6/6).</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="section-header">
+      <div class="section-tag"><i class="fas fa-clipboard-check"></i> Mission 2</div>
+      <h2>Conformité CI/CD <span class="accent">avec Plumber</span></h2>
+      <p>Sécuriser le code ne suffit pas si un développeur peut désactiver les contrôles en commentant un job : Plumber audite la structure même du pipeline avant son exécution.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <h3><i class="fas fa-xmark"></i> Commenter le scan</h3>
+        <div class="code-block"># security_sca_scan:
+#   stage: security
+#   script:
+#     - trivy fs .</div>
+        <p>→ Toutes les CVE passent en production.</p>
+      </div>
+      <div class="card">
+        <h3><i class="fas fa-xmark"></i> Image obsolète</h3>
+        <div class="code-block">image: node:10-alpine
+# CVE non patchées
+# depuis avril 2021</div>
+        <p>→ Failles connues exploitables.</p>
+      </div>
+      <div class="card">
+        <h3><i class="fas fa-xmark"></i> Secrets en clair</h3>
+        <div class="code-block">script:
+  - export API_KEY="sk_live..."
+  - curl -H "Token: abc123"</div>
+        <p>→ Credentials leakés dans les logs.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="detail-block">
+      <h3>Ruleset RSSI — 6 règles de gouvernance</h3>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <h3>RS-001 <span class="tag tag--accent">HIGH</span></h3>
+        <p><strong>Pas d'images obsolètes</strong> — node:10 non patché depuis avril 2021 : RS-001 détecte toute image en fin de vie.</p>
+      </div>
+      <div class="card card--secondary">
+        <h3>RS-002 <span class="tag tag--accent">CRITICAL</span></h3>
+        <p><strong>Scan SCA obligatoire</strong> — analyse Trivy systématique des dépendances, aucun pipeline sans SCA.</p>
+      </div>
+      <div class="card">
+        <h3>RS-003 <span class="tag">MEDIUM</span></h3>
+        <p><strong>Versions pinnées</strong> — pas de tag <code>:latest</code>, builds reproductibles et traçables.</p>
+      </div>
+      <div class="card card--secondary">
+        <h3>RS-004 <span class="tag tag--accent">CRITICAL</span></h3>
+        <p><strong>Pas de secrets en clair</strong> — CI/CD Variables masquées obligatoires, blocage immédiat si credential détecté.</p>
+      </div>
+      <div class="card">
+        <h3>RS-005 <span class="tag tag--accent">HIGH</span></h3>
+        <p><strong>SAST activé</strong> — analyse statique du code source, template GitLab natif inclus.</p>
+      </div>
+      <div class="card">
+        <h3>RS-006 <span class="tag">LOW</span></h3>
+        <p><strong>Artifacts archivés 90 jours</strong> — traçabilité pour audit ISO 27001, rapport RSSI et SBOM conservés.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="detail-block">
+      <h3>Architecture en double rempart</h3>
+    </div>
+
+    <div class="grid-2">
+      <div class="card card--accent">
+        <h3><i class="fas fa-check-circle"></i> Scénario A — Pipeline conforme <span class="tag tag--accent">6/6</span></h3>
+        <div class="code-block">[+] Loading ruleset: rapidsoft-rules.yaml...
+[+] Analyzing pipeline structure...
+
+[✓] PASSED: RS-001 (Images non obsolètes)
+[✓] PASSED: RS-002 (Scan SCA présent)
+[✓] PASSED: RS-003 (Versions pinnées)
+[✓] PASSED: RS-004 (Aucun secret en clair)
+[✓] PASSED: RS-005 (Template SAST inclus)
+[✓] PASSED: RS-006 (Artifacts configurés)
+
+Score : 6 règles validées / 6
+[STATUS] Pipeline CONFORME. Prêt pour le déploiement.</div>
+      </div>
+      <div class="card">
+        <h3><i class="fas fa-circle-xmark"></i> Scénario B — Tentative de contournement <span class="tag">3/6</span></h3>
+        <div class="code-block">[+] Loading ruleset: rapidsoft-rules.yaml...
+[+] Analyzing pipeline structure...
+
+[✗] FAILED: RS-001 (node:10-alpine détecté)
+    → Fix: Utilisez node:18-alpine
+[✓] PASSED: RS-002 (Scan SCA présent)
+[!] WARNING: RS-003 (trivy:latest détecté)
+    → Fix: Pinnez trivy:0.50.1
+[✗] FAILED: RS-004 (Secret API_KEY en clair)
+    → Fix: CI/CD Variables masquées GitLab
+[✓] PASSED: RS-005 (Template SAST inclus)
+[✓] PASSED: RS-006 (Artifacts configurés)
+
+Score : 3 règles validées / 6
+[STATUS] Pipeline NON CONFORME. Déploiement bloqué.</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Plumber officiel — 9 contrôles CIS + OWASP CICD-SEC</h3>
+        <ul class="check-list">
+          <li><i class="fas fa-check-circle"></i><span>Container images must not use forbidden tags — 100%</span></li>
+          <li><i class="fas fa-check-circle"></i><span>Pipeline must include required templates — 100%</span></li>
+          <li><i class="fas fa-check-circle"></i><span>Pipeline must not enable debug trace — 100%</span></li>
+          <li><i class="fas fa-check-circle"></i><span>Security jobs must not be weakened — 100%</span></li>
+          <li><i class="fas fa-check-circle"></i><span>Pipeline must not use Docker-in-Docker — 100%</span></li>
+          <li><i class="fas fa-triangle-exclamation"></i><span>Container images must come from authorized sources — 0% (backlog Phase 2)</span></li>
+        </ul>
+      </div>
+      <div class="card card--center">
+        <div class="mini-stats">
+          <div class="mini-stat">
+            <div class="value">88,9%</div>
+            <div class="label">Score Plumber officiel</div>
+          </div>
+          <div class="mini-stat">
+            <div class="value">6/6</div>
+            <div class="label">Moteur RSSI custom</div>
+          </div>
+        </div>
+        <div class="info-callout">
+          <i class="fas fa-circle-info"></i>
+          <p>Les deux remparts s'exécutent en parallèle. Toute violation bloque le déploiement.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="section-header">
+      <div class="section-tag"><i class="fas fa-road"></i> Roadmap</div>
+      <h2>Déploiement <span class="accent">en 3 Phases</span></h2>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <h3><span class="badge badge-project">Phase 1</span> Foundation</h3>
+        <p>Mois 1 → 3</p>
+        <ul class="check-list">
+          <li><i class="fas fa-check"></i><span>Trivy CI/CD sur tous les projets</span></li>
+          <li><i class="fas fa-check"></i><span>SAST + Secret Detection actifs</span></li>
+          <li><i class="fas fa-check"></i><span>SBOM CycloneDX généré</span></li>
+          <li><i class="fas fa-check"></i><span>Politique de blocage CRITICAL</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="badge badge-project">Phase 2</span> Automation</h3>
+        <p>Mois 4 → 6</p>
+        <ul class="check-list">
+          <li><i class="fas fa-check"></i><span>Renovate Bot self-hosted</span></li>
+          <li><i class="fas fa-check"></i><span>Dependency-Track centralisé</span></li>
+          <li><i class="fas fa-check"></i><span>License-check GPL/AGPL bloquant</span></li>
+          <li><i class="fas fa-check"></i><span>Tableau de bord RSSI consolidé</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="badge badge-project">Phase 3</span> Optimization</h3>
+        <p>Mois 7 → 9</p>
+        <ul class="check-list">
+          <li><i class="fas fa-check"></i><span>Registre interne Package Registry</span></li>
+          <li><i class="fas fa-check"></i><span>Vérification provenance npm/Maven</span></li>
+          <li><i class="fas fa-check"></i><span>Conformité DORA/NIS2 validée</span></li>
+          <li><i class="fas fa-check"></i><span>Préparation audit ISO 27001</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="detail-block">
+      <h3>Indicateurs de succès à 6 mois</h3>
+    </div>
+
+    <div class="grid-3">
+      <div class="stat-card">
+        <div class="stat-value">100%</div>
+        <div class="stat-label">Couverture SCA</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">≥ 5/6</div>
+        <div class="stat-label">Score Plumber moyen</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">&lt; 48h</div>
+        <div class="stat-label">MTTR CRITICAL</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">&gt; 60%</div>
+        <div class="stat-label">Auto-merge Renovate</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section-sm">
+    <div class="cta-block">
+      <h2>Explorer la suite du <span class="accent">Mastère</span></h2>
+      <p>D'autres missions du Mastère Expert Cloud, Infrastructure &amp; Sécurité : monitoring Prometheus/Grafana, infrastructure haute disponibilité, virtualisation OpenStack et plus encore.</p>
+      <div class="btn-group">
+        <a href="index.html" class="btn btn-primary"><i class="fas fa-th"></i> Vue d'ensemble du Mastère</a>
+        <a href="../contact.html" class="btn btn-outline"><i class="fas fa-envelope"></i> Me contacter</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-logo">Nicolas<span class="dot">.SI</span></div>
+      <p>Mastère Expert Cloud, Infrastructure &amp; Sécurité · Ynov Campus.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Mastère</h4>
+      <ul>
+        <li><a href="index.html">Vue d'ensemble</a></li>
+        <li><a href="monitoring.html">Prometheus/Grafana</a></li>
+        <li><a href="laravel.html">Laravel via Ansible</a></li>
+        <li><a href="samba.html">Samba</a></li>
+        <li><a href="openstack.html">OpenStack</a></li>
+        <li><a href="gridbook.html">GridBook</a></li>
+        <li><a href="virtualisation.html">Infra HA</a></li>
+        <li><a href="rapidsoft-cicd.html">RapidSoft DevSecOps</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <div class="social-links">
+        <a href="https://www.linkedin.com/in/nicolas-blin-6a5135218/" class="social-btn" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://github.com/nblinpro" class="social-btn" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="mailto:nicolas.blin.pro1@gmail.com" class="social-btn" aria-label="Email"><i class="far fa-envelope"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Nicolas Blin — Expert Architecture SI</p>
+    <span class="mono">Mastère</span>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+</body>
+</html>

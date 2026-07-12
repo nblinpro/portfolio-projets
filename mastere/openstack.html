@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenStack — Déploiement &amp; Orchestration — Nicolas Blin</title>
+  <meta name="description" content="Déploiement OpenStack complet via DevStack — Nova, Neutron, Swift, Cinder, Keystone. Documentation technique Mastère M1.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="ambient-bg"></div>
+
+<header class="site-header">
+  <a href="../index.html" class="logo">Nicolas<span class="dot">.SI</span></a>
+  <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <nav class="site-nav" id="siteNav">
+    <ul>
+      <li><a href="../index.html">Accueil</a></li>
+      <li><a href="../parcours.html">Parcours</a></li>
+      <li><a href="../projets.html">Projets</a></li>
+      <li><a href="../contact.html" class="nav-cta">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<nav class="breadcrumb">
+  <a href="index.html">Mastère</a>
+  <i class="fas fa-chevron-right"></i>
+  <span>Déploiement OpenStack — DevStack</span>
+</nav>
+
+<div class="page-hero">
+  <span class="hero-tag"><i class="fas fa-cloud"></i> Mastère M1 · Cloud IaaS</span>
+  <h1>Déploiement &amp; Orchestration <span class="gradient-text">OpenStack</span></h1>
+  <p>Déploiement complet d'un cloud privé OpenStack via DevStack sur Ubuntu 24.04 — Nova, Neutron, Swift, Cinder, Keystone.</p>
+</div>
+
+<div class="page-wrapper">
+
+  <section class="section">
+    <div class="grid-2">
+      <div>
+        <div class="section-tag"><i class="fas fa-info-circle"></i> Contexte</div>
+        <h2>Architecture <span class="accent">Cloud Privé</span></h2>
+        <p>OpenStack est la plateforme IaaS open-source leader pour les clouds privés et hybrides. Ce projet académique (Ynov Campus, Mastère M1) consiste à déployer et maîtriser un cloud complet avec toutes ses composantes.</p>
+        <p>DevStack permet un déploiement all-in-one sur une machine Ubuntu, idéal pour l'apprentissage et le lab. Chaque service est configuré, testé et documenté dans des TPs dédiés.</p>
+        <div class="tags">
+          <span class="tag tag--accent">OpenStack</span>
+          <span class="tag tag--accent">DevStack</span>
+          <span class="tag tag--accent">Ubuntu 24.04</span>
+          <span class="tag tag--accent">Cloud IaaS</span>
+          <span class="tag tag--accent">Python</span>
+        </div>
+      </div>
+      <div class="code-block">
+        <span class="comment"># DevStack Installation</span><br>
+        git clone https://opendev.org/openstack/devstack<br>
+        cd devstack<br><br>
+        <span class="comment"># local.conf configuration</span><br>
+        [[local|localrc]]<br>
+        HOST_IP=192.168.1.100<br>
+        ADMIN_PASSWORD=SecurePass123<br>
+        DATABASE_PASSWORD=$ADMIN_PASSWORD<br>
+        RABBIT_PASSWORD=$ADMIN_PASSWORD<br>
+        SERVICE_PASSWORD=$ADMIN_PASSWORD<br><br>
+        <span class="comment"># Enable services</span><br>
+        enable_service nova neutron swift<br>
+        enable_service cinder keystone glance<br><br>
+        <span class="comment"># Deploy</span><br>
+        ./stack.sh
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="section-header">
+      <div class="section-tag"><i class="fas fa-cubes"></i> Services</div>
+      <h2>Services <span class="accent">OpenStack</span></h2>
+      <p>Chaque service a été déployé, configuré et testé avec une documentation complète.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card card--accent">
+        <div class="card-header">
+          <div class="card-icon"><i class="fas fa-key"></i></div>
+          <h3>Keystone</h3>
+        </div>
+        <p>Identity Service — service d'authentification et d'autorisation : gestion des utilisateurs, projets, rôles et tokens. Endpoint catalogue pour tous les services.</p>
+        <div class="tags">
+          <span class="tag">Tokens</span>
+          <span class="tag">RBAC</span>
+          <span class="tag">API</span>
+        </div>
+      </div>
+
+      <div class="card card--accent">
+        <div class="card-header">
+          <div class="card-icon"><i class="fas fa-server"></i></div>
+          <h3>Nova</h3>
+        </div>
+        <p>Compute Service — gestion des instances de calcul (VMs). Création, démarrage, arrêt et migration de machines virtuelles. Gestion des flavors et quotas.</p>
+        <div class="tags">
+          <span class="tag">Instances</span>
+          <span class="tag">Flavors</span>
+          <span class="tag">KVM</span>
+        </div>
+      </div>
+
+      <div class="card card--accent">
+        <div class="card-header">
+          <div class="card-icon"><i class="fas fa-network-wired"></i></div>
+          <h3>Neutron</h3>
+        </div>
+        <p>Network Service — service réseau : création de réseaux virtuels, sous-réseaux, routeurs, security groups et floating IPs. SDN cloud.</p>
+        <div class="tags">
+          <span class="tag">SDN</span>
+          <span class="tag">OVS</span>
+          <span class="tag">Floating IP</span>
+        </div>
+      </div>
+
+      <div class="card card--accent">
+        <div class="card-header">
+          <div class="card-icon"><i class="fas fa-images"></i></div>
+          <h3>Glance</h3>
+        </div>
+        <p>Image Service — catalogue et stockage des images de systèmes d'exploitation. Import d'images Ubuntu, Debian, CentOS au format QCOW2.</p>
+        <div class="tags">
+          <span class="tag">Images</span>
+          <span class="tag">QCOW2</span>
+          <span class="tag">Catalogue</span>
+        </div>
+      </div>
+
+      <div class="card card--accent">
+        <div class="card-header">
+          <div class="card-icon"><i class="fas fa-hdd"></i></div>
+          <h3>Cinder</h3>
+        </div>
+        <p>Block Storage — stockage bloc persistant : création de volumes, snapshots et attachement à des instances Nova. Équivalent des disques EBS.</p>
+        <div class="tags">
+          <span class="tag">Volumes</span>
+          <span class="tag">Snapshots</span>
+          <span class="tag">LVM</span>
+        </div>
+      </div>
+
+      <div class="card card--accent">
+        <div class="card-header">
+          <div class="card-icon"><i class="fas fa-database"></i></div>
+          <h3>Swift</h3>
+        </div>
+        <p>Object Storage — stockage objet distribué et résilient : containers et objets, API compatible S3. Idéal pour les sauvegardes et médias.</p>
+        <div class="tags">
+          <span class="tag">S3</span>
+          <span class="tag">Containers</span>
+          <span class="tag">API REST</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="section-header">
+      <div class="section-tag"><i class="fas fa-flask"></i> Travaux Pratiques</div>
+      <h2>TPs <span class="accent">Documentés</span></h2>
+    </div>
+
+    <div class="grid-3">
+      <div class="project-card">
+        <div class="card-header">
+          <h3>TP1 — Installation DevStack &amp; Keystone</h3>
+          <div class="card-icon"><i class="fas fa-1"></i></div>
+        </div>
+        <p>Installation complète de DevStack sur Ubuntu 24.04 Server : configuration du fichier local.conf, activation des services nécessaires, déploiement et vérification. Configuration Keystone : utilisateurs, projets, rôles et manipulation des tokens d'authentification via l'API OpenStack.</p>
+        <div class="tags">
+          <span class="tag tag--accent">DevStack</span>
+          <span class="tag tag--accent">Keystone</span>
+          <span class="tag tag--accent">Ubuntu 24.04</span>
+          <span class="tag tag--accent">OpenStack CLI</span>
+        </div>
+        <div class="card-footer">
+          <a href="openstack/tps/tp1.html" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">Documentation TP1 <i class="fas fa-arrow-right"></i></a>
+          <a href="openstack/documents/TP1 _ Installation dOpenStack-2.pdf" target="_blank" rel="noopener" class="btn btn-outline btn-sm"><i class="fas fa-file-pdf"></i> Sujet PDF</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="card-header">
+          <h3>TP2 — Nova Compute &amp; Gestion des Instances</h3>
+          <div class="card-icon"><i class="fas fa-2"></i></div>
+        </div>
+        <p>Découverte complète du service Nova : création et gestion de flavors (profils de ressources), import d'images cloud, création de keypairs SSH, lancement d'instances et connexion. Gestion du cycle de vie des VMs (pause, resize, snapshot).</p>
+        <div class="tags">
+          <span class="tag tag--accent">Nova</span>
+          <span class="tag tag--accent">Instances</span>
+          <span class="tag tag--accent">Flavors</span>
+          <span class="tag tag--accent">Keypairs</span>
+        </div>
+        <div class="card-footer">
+          <a href="openstack/tps/tp2.html" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">Documentation TP2 <i class="fas fa-arrow-right"></i></a>
+          <a href="openstack/documents/TP2 _ Découverte complète de Nova (Compute) – OpenStack.pdf" target="_blank" rel="noopener" class="btn btn-outline btn-sm"><i class="fas fa-file-pdf"></i> Sujet PDF</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="card-header">
+          <h3>TP3 — Swift Object Storage</h3>
+          <div class="card-icon"><i class="fas fa-3"></i></div>
+        </div>
+        <p>Configuration avancée de Swift pour le stockage objet : création de containers, upload/download d'objets, gestion des ACL d'accès, configuration des métadonnées et usage de l'API REST compatible S3.</p>
+        <div class="tags">
+          <span class="tag tag--accent">Swift</span>
+          <span class="tag tag--accent">Object Storage</span>
+          <span class="tag tag--accent">API S3</span>
+          <span class="tag tag--accent">ACL</span>
+        </div>
+        <div class="card-footer">
+          <a href="openstack/tps/tp3.html" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">Documentation TP3 <i class="fas fa-arrow-right"></i></a>
+          <a href="openstack/documents/TP3 _ OpenStack Swift – Stockage Objet et Configuration Avancée.pdf" target="_blank" rel="noopener" class="btn btn-outline btn-sm"><i class="fas fa-file-pdf"></i> Sujet PDF</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-block">
+    <h2>Explorer la suite du Mastère</h2>
+    <p>Retour à la vue d'ensemble du Mastère ou poursuite vers le monitoring Prometheus/Grafana.</p>
+    <div class="btn-group">
+      <a href="index.html" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Vue d'ensemble</a>
+      <a href="monitoring.html" class="btn btn-primary">Monitoring Prometheus/Grafana <i class="fas fa-arrow-right"></i></a>
+      <a href="../contact.html" class="btn btn-secondary"><i class="fas fa-envelope"></i> Me contacter</a>
+    </div>
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-logo">Nicolas<span class="dot">.SI</span></div>
+      <p>Mastère Expert Cloud, Infrastructure &amp; Sécurité · Ynov Campus.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Mastère</h4>
+      <ul>
+        <li><a href="index.html">Vue d'ensemble</a></li>
+        <li><a href="monitoring.html">Prometheus/Grafana</a></li>
+        <li><a href="laravel.html">Laravel via Ansible</a></li>
+        <li><a href="samba.html">Samba</a></li>
+        <li><a href="openstack.html">OpenStack</a></li>
+        <li><a href="gridbook.html">GridBook</a></li>
+        <li><a href="virtualisation.html">Infra HA</a></li>
+        <li><a href="rapidsoft-cicd.html">RapidSoft DevSecOps</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <div class="social-links">
+        <a href="https://www.linkedin.com/in/nicolas-blin-6a5135218/" class="social-btn" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://github.com/nblinpro" class="social-btn" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="mailto:nicolas.blin.pro1@gmail.com" class="social-btn" aria-label="Email"><i class="far fa-envelope"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Nicolas Blin — Expert Architecture SI</p>
+    <span class="mono">Mastère</span>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+</body>
+</html>

@@ -3,133 +3,405 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nicolas Lin — Portfolio</title>
-  <meta name="description" content="Portfolio de Nicolas Lin — projets, compétences et contact.">
-  <link rel="icon" href="data:,">
+  <title>Nicolas Blin — Expert Architecture SI & Cloud</title>
+  <meta name="description" content="Portfolio de Nicolas Blin, Expert Architecture SI & Cloud. Infrastructure Cloud, automatisation Ansible/Docker, DevSecOps, monitoring, réseau Cisco.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<div class="ambient-bg"></div>
 
-  <header class="site-header">
-    <nav class="nav container">
-      <a href="#top" class="logo">NL</a>
-      <button class="nav-toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="#about">À propos</a></li>
-        <li><a href="#projects">Projets</a></li>
-        <li><a href="#skills">Compétences</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-      <button class="theme-toggle" id="themeToggle" aria-label="Basculer le thème">🌙</button>
-    </nav>
-  </header>
+<header class="site-header">
+  <a href="index.html" class="logo">Nicolas<span class="dot">.SI</span></a>
+  <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <nav class="site-nav" id="siteNav">
+    <ul>
+      <li><a href="index.html" class="active">Accueil</a></li>
+      <li><a href="parcours.html">Parcours</a></li>
+      <li><a href="projets.html">Projets</a></li>
+      <li><a href="contact.html" class="nav-cta">Contact</a></li>
+    </ul>
+  </nav>
+</header>
 
-  <main>
-    <section id="top" class="hero container">
-      <p class="hero-eyebrow">Bonjour, je suis</p>
-      <h1>Nicolas Lin</h1>
-      <p class="hero-subtitle">Titre / rôle à préciser — ex. Développeur Full-Stack</p>
-      <p class="hero-text">
-        Courte description de vous en une ou deux phrases : ce que vous faites,
-        ce qui vous passionne, ou ce que vous cherchez (stage, emploi, projets freelance...).
-      </p>
-      <div class="hero-actions">
-        <a href="#projects" class="btn btn-primary">Voir mes projets</a>
-        <a href="#contact" class="btn btn-secondary">Me contacter</a>
+<div class="page-wrapper">
+
+<section class="section">
+  <div class="hero">
+    <div class="hero-inner">
+      <span class="hero-tag"><i class="fas fa-terminal"></i> Portfolio · Expert SI</span>
+      <h1>Bonjour, je suis<br><span class="gradient-text">Nicolas Blin</span></h1>
+      <p class="hero-sub">Expert en Architecture SI &amp; Cloud. Je conçois et déploie des infrastructures critiques — automatisées, hautement disponibles et sécurisées.</p>
+      <div class="hero-cta">
+        <a href="projets.html" class="btn btn-primary"><i class="fas fa-folder-open"></i> Explorer mes projets</a>
+        <a href="contact.html" class="btn btn-outline"><i class="fas fa-paper-plane"></i> Me contacter</a>
       </div>
-    </section>
-
-    <section id="about" class="section container">
-      <h2>À propos</h2>
-      <p>
-        Présentez ici votre parcours : formation, expériences marquantes, ce qui vous
-        distingue. Deux ou trois paragraphes suffisent pour un portfolio efficace.
-      </p>
-    </section>
-
-    <section id="projects" class="section container">
-      <h2>Projets</h2>
-      <div class="project-grid">
-
-        <article class="project-card">
-          <div class="project-card-image" aria-hidden="true"></div>
-          <div class="project-card-body">
-            <h3>Nom du projet 1</h3>
-            <p>Description courte : le problème résolu, les technologies utilisées.</p>
-            <div class="project-tags">
-              <span class="tag">HTML</span>
-              <span class="tag">CSS</span>
-              <span class="tag">JavaScript</span>
-            </div>
-            <div class="project-links">
-              <a href="#" target="_blank" rel="noopener">Démo</a>
-              <a href="#" target="_blank" rel="noopener">Code</a>
-            </div>
-          </div>
-        </article>
-
-        <article class="project-card">
-          <div class="project-card-image" aria-hidden="true"></div>
-          <div class="project-card-body">
-            <h3>Nom du projet 2</h3>
-            <p>Description courte : le problème résolu, les technologies utilisées.</p>
-            <div class="project-tags">
-              <span class="tag">Python</span>
-              <span class="tag">API</span>
-            </div>
-            <div class="project-links">
-              <a href="#" target="_blank" rel="noopener">Démo</a>
-              <a href="#" target="_blank" rel="noopener">Code</a>
-            </div>
-          </div>
-        </article>
-
-        <article class="project-card">
-          <div class="project-card-image" aria-hidden="true"></div>
-          <div class="project-card-body">
-            <h3>Nom du projet 3</h3>
-            <p>Description courte : le problème résolu, les technologies utilisées.</p>
-            <div class="project-tags">
-              <span class="tag">React</span>
-              <span class="tag">Node.js</span>
-            </div>
-            <div class="project-links">
-              <a href="#" target="_blank" rel="noopener">Démo</a>
-              <a href="#" target="_blank" rel="noopener">Code</a>
-            </div>
-          </div>
-        </article>
-
+      <div class="hero-badges">
+        <span class="hero-badge"><i class="fas fa-cloud"></i> Cloud &amp; IaaS</span>
+        <span class="hero-badge"><i class="fas fa-shield-halved"></i> Sécurité SI</span>
+        <span class="hero-badge"><i class="fas fa-infinity"></i> DevOps &amp; Ansible</span>
+        <span class="hero-badge"><i class="fas fa-network-wired"></i> Réseau Cisco</span>
+        <span class="hero-badge"><i class="fas fa-certificate"></i> CCNA 1·2·3</span>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-    <section id="skills" class="section container">
-      <h2>Compétences</h2>
-      <ul class="skills-list">
-        <li>HTML / CSS / JavaScript</li>
-        <li>À compléter</li>
-        <li>À compléter</li>
-        <li>À compléter</li>
+<section class="section">
+  <div class="section-header">
+    <div class="section-tag"><i class="fas fa-user"></i> Qui suis-je ?</div>
+    <h2>Profil &amp; <span class="accent">Philosophie</span></h2>
+    <p>Architecte de solutions passionné par l'Open Source et le DevOps.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="code-block">
+      // nicolas.config.json<br>
+      {<br>
+      &nbsp;&nbsp;"nom": "Nicolas Blin",<br>
+      &nbsp;&nbsp;"rôle": "Expert Architecture SI &amp; Cloud",<br>
+      &nbsp;&nbsp;"formation": "Mastère M1 · Ynov Campus",<br>
+      &nbsp;&nbsp;"alternance": "Innosys — Expert Architecture SI",<br>
+      &nbsp;&nbsp;"focus": ["Automation", "Cloud", "Security"],<br>
+      &nbsp;&nbsp;"philosophie": "Infrastructure as Code",<br>
+      &nbsp;&nbsp;"disponible": true<br>
+      }
+    </div>
+
+    <div class="grid-2">
+      <div class="stat-card">
+        <div class="stat-value">3+</div>
+        <div class="stat-label">Ans d'alternance</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">20+</div>
+        <div class="stat-label">Projets réalisés</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">CCNA</div>
+        <div class="stat-label">Certif. 1 · 2 · 3</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">M1</div>
+        <div class="stat-label">Expert Cloud &amp; SI</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="grid-2">
+    <div class="card card--accent">
+      <h3>Mastère Expert Cloud</h3>
+      <p>Ynov Campus · 2025–2027</p>
+      <a href="mastere/index.html" class="btn btn-ghost btn-sm">Découvrir le programme <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="card card--secondary">
+      <h3>BUT Réseaux &amp; Télécoms</h3>
+      <p>IUT de Blois · 2022–2025</p>
+      <a href="but/index.html" class="btn btn-ghost btn-ghost--secondary btn-sm">Découvrir le programme <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section">
+  <div class="section-header">
+    <div class="section-tag"><i class="fas fa-star"></i> Sélection</div>
+    <h2>Projets <span class="accent">Phares</span></h2>
+    <p>Les réalisations les plus significatives de mon parcours professionnel et académique.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="project-card">
+      <div class="card-header">
+        <h3>GridBook : Architecture Souveraine</h3>
+        <div class="card-icon"><i class="fas fa-dice"></i></div>
+      </div>
+      <span class="badge badge-project">Lab Innovation · Mastère</span>
+      <p>Plateforme de pari full-stack auto-hébergée sur Proxmox. Sécurisation via Cloudflare Tunnel, backend FastAPI et gestion de flux temps réel.</p>
+      <div class="tags">
+        <span class="tag tag--accent">Proxmox</span>
+        <span class="tag tag--accent">FastAPI</span>
+        <span class="tag tag--accent">React</span>
+        <span class="tag tag--accent">Cloudflare</span>
+      </div>
+      <div class="card-footer">
+        <a href="mastere/gridbook.html" class="btn btn-ghost btn-sm">Voir détails <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-header">
+        <h3>Conteneurisation Multisites Web</h3>
+        <div class="card-icon"><i class="fas fa-cubes"></i></div>
+      </div>
+      <span class="badge badge-project">Expertise Cloud · Innosys</span>
+      <p>Migration et industrialisation des sites clients vers une infrastructure Docker. Optimisation densité serveur et isolation applicative.</p>
+      <div class="tags">
+        <span class="tag tag--accent">Docker</span>
+        <span class="tag tag--accent">Apache2</span>
+        <span class="tag tag--accent">Laravel</span>
+        <span class="tag tag--accent">Ansible</span>
+      </div>
+      <div class="card-footer">
+        <a href="mastere/laravel.html" class="btn btn-ghost btn-sm">Voir détails <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-header">
+        <h3>Déploiement OpenStack</h3>
+        <div class="card-icon"><i class="fas fa-cloud"></i></div>
+      </div>
+      <span class="badge badge-project">Cloud IaaS · Ynov</span>
+      <p>Déploiement complet d'OpenStack via DevStack — Nova, Neutron, Swift, Cinder, Keystone configurés et documentés.</p>
+      <div class="tags">
+        <span class="tag tag--accent">OpenStack</span>
+        <span class="tag tag--accent">DevStack</span>
+        <span class="tag tag--accent">Nova</span>
+        <span class="tag tag--accent">Neutron</span>
+      </div>
+      <div class="card-footer">
+        <a href="mastere/openstack.html" class="btn btn-ghost btn-sm">Voir détails <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="card-header">
+        <h3>Architecture IoT &amp; LoRa</h3>
+        <div class="card-icon card-icon--secondary"><i class="fas fa-satellite-dish"></i></div>
+      </div>
+      <span class="badge badge-project">IoT · BUT3</span>
+      <p>Architecture IoT complète avec ESP32, protocole LoRa, MQTT broker et maison connectée — du capteur au cloud.</p>
+      <div class="tags">
+        <span class="tag tag--secondary">ESP32</span>
+        <span class="tag tag--secondary">LoRa</span>
+        <span class="tag tag--secondary">MQTT</span>
+        <span class="tag tag--secondary">IoT</span>
+      </div>
+      <div class="card-footer">
+        <a href="but/but3.html" class="btn btn-ghost btn-ghost--secondary btn-sm">Voir détails <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <p><a href="projets.html" class="btn btn-outline"><i class="fas fa-folder"></i> Tous les projets</a></p>
+</section>
+
+<section class="section">
+  <div class="section-header">
+    <div class="section-tag"><i class="fas fa-code"></i> Compétences</div>
+    <h2>Expertises <span class="accent">Métier</span></h2>
+    <p>Un socle de compétences transverses, du réseau à l'infrastructure Cloud.</p>
+  </div>
+
+  <div class="grid-3">
+    <div class="card card--center">
+      <div class="card-icon-box"><i class="fas fa-shield-halved"></i></div>
+      <h3>Réseau &amp; Sécurité</h3>
+      <div class="tags">
+        <span class="tag">DNS/DHCP</span>
+        <span class="tag">Firewalls</span>
+        <span class="tag">VPN</span>
+        <span class="tag">Radius</span>
+        <span class="tag">Certificats PKI</span>
+        <span class="tag">OSPF</span>
+        <span class="tag">BGP</span>
+        <span class="tag">VLAN</span>
+      </div>
+    </div>
+
+    <div class="card card--center">
+      <div class="card-icon-box"><i class="fas fa-server"></i></div>
+      <h3>Infrastructure</h3>
+      <div class="tags">
+        <span class="tag">Switchs HP &amp; Cisco</span>
+        <span class="tag">Proxmox</span>
+        <span class="tag">VMware ESXi</span>
+        <span class="tag">Wi-Fi Pro</span>
+        <span class="tag">Load Balancing</span>
+      </div>
+    </div>
+
+    <div class="card card--center">
+      <div class="card-icon-box"><i class="fas fa-infinity"></i></div>
+      <h3>DevOps &amp; Cloud</h3>
+      <div class="tags">
+        <span class="tag">Ansible</span>
+        <span class="tag">Docker</span>
+        <span class="tag">OpenStack</span>
+        <span class="tag">OVHcloud</span>
+        <span class="tag">GitHub Actions</span>
+        <span class="tag">IaC</span>
+      </div>
+    </div>
+
+    <div class="card card--center">
+      <div class="card-icon-box"><i class="fas fa-chart-line"></i></div>
+      <h3>Monitoring</h3>
+      <div class="tags">
+        <span class="tag">Prometheus</span>
+        <span class="tag">Grafana</span>
+        <span class="tag">Zabbix</span>
+        <span class="tag">Centreon</span>
+        <span class="tag">Nagios</span>
+        <span class="tag">rsyslog</span>
+        <span class="tag">Alertmanager</span>
+      </div>
+    </div>
+
+    <div class="card card--center">
+      <div class="card-icon-box"><i class="fas fa-terminal"></i></div>
+      <h3>Systèmes &amp; BDD</h3>
+      <div class="tags">
+        <span class="tag">Linux (Ubuntu, Debian, Rocky)</span>
+        <span class="tag">Windows Server</span>
+        <span class="tag">MySQL</span>
+        <span class="tag">MariaDB</span>
+        <span class="tag">PostgreSQL</span>
+      </div>
+    </div>
+
+    <div class="card card--center">
+      <div class="card-icon-box"><i class="fas fa-code"></i></div>
+      <h3>Web &amp; Développement</h3>
+      <div class="tags">
+        <span class="tag">Apache2</span>
+        <span class="tag">Nginx</span>
+        <span class="tag">PHP</span>
+        <span class="tag">FastAPI</span>
+        <span class="tag">Laravel</span>
+        <span class="tag">React</span>
+        <span class="tag">JavaScript</span>
+        <span class="tag">Python</span>
+      </div>
+    </div>
+
+    <div class="card card--center">
+      <div class="card-icon-box"><i class="fas fa-database"></i></div>
+      <h3>Sauvegarde &amp; PCA</h3>
+      <div class="tags">
+        <span class="tag">Stratégie 3-2-1</span>
+        <span class="tag">PCA</span>
+        <span class="tag">PRA</span>
+        <span class="tag">RTO/RPO</span>
+        <span class="tag">Externalisation</span>
+      </div>
+    </div>
+
+    <div class="card card--center">
+      <div class="card-icon-box"><i class="fas fa-phone-volume"></i></div>
+      <h3>Téléphonie IP</h3>
+      <div class="tags">
+        <span class="tag">Déploiement ToIP</span>
+        <span class="tag">IPBX</span>
+        <span class="tag">Keyyo Phone</span>
+        <span class="tag">SIP</span>
+        <span class="tag">QoS VoIP</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-header">
+    <div class="section-tag"><i class="fas fa-toolbox"></i> Stack</div>
+    <h2>Outils &amp; <span class="accent">Technologies</span></h2>
+    <p>Les technologies que j'utilise au quotidien.</p>
+  </div>
+
+  <p class="tech-cat"><i class="fas fa-layer-group"></i> Stack technique</p>
+  <div class="tech-row">
+    <div class="tech-chip"><i class="fab fa-docker"></i><span>Docker</span></div>
+    <div class="tech-chip"><i class="fas fa-robot"></i><span>Ansible</span></div>
+    <div class="tech-chip"><i class="fas fa-cloud"></i><span>OpenStack</span></div>
+    <div class="tech-chip"><i class="fas fa-cloud-upload-alt"></i><span>OVHcloud</span></div>
+    <div class="tech-chip"><i class="fab fa-laravel"></i><span>Laravel</span></div>
+    <div class="tech-chip"><i class="fab fa-ubuntu"></i><span>Ubuntu</span></div>
+    <div class="tech-chip"><i class="fab fa-redhat"></i><span>Red Hat</span></div>
+    <div class="tech-chip"><i class="fab fa-linux"></i><span>Debian</span></div>
+    <div class="tech-chip"><i class="fas fa-database"></i><span>MySQL</span></div>
+    <div class="tech-chip"><i class="fas fa-database"></i><span>PostgreSQL</span></div>
+    <div class="tech-chip"><i class="fas fa-network-wired"></i><span>Cisco</span></div>
+    <div class="tech-chip"><i class="fas fa-shield-alt"></i><span>pfSense</span></div>
+    <div class="tech-chip"><i class="fas fa-fire"></i><span>Prometheus</span></div>
+    <div class="tech-chip"><i class="fas fa-chart-area"></i><span>Grafana</span></div>
+    <div class="tech-chip"><i class="fas fa-eye"></i><span>Zabbix</span></div>
+    <div class="tech-chip"><i class="fas fa-cubes"></i><span>Proxmox</span></div>
+    <div class="tech-chip"><i class="fab fa-python"></i><span>Python</span></div>
+    <div class="tech-chip"><i class="fab fa-github"></i><span>GitHub</span></div>
+    <div class="tech-chip"><i class="fas fa-share-alt"></i><span>Samba</span></div>
+    <div class="tech-chip"><i class="fas fa-phone-alt"></i><span>Keyyo</span></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section">
+  <div class="section-header">
+    <div class="section-tag"><i class="fas fa-briefcase"></i> Expériences</div>
+    <h2>Ils m'ont fait <span class="accent">confiance</span></h2>
+  </div>
+
+  <div class="grid-2">
+    <div class="card card--accent card--center">
+      <span class="badge badge-company">Innosys</span>
+      <h3>Expert Architecture SI</h3>
+      <p>2025 – Présent · Alternance M1</p>
+    </div>
+    <div class="card card--secondary card--center">
+      <span class="badge badge-company">DGFIP</span>
+      <h3>Assistant de Proximité</h3>
+      <p>2022 – 2025 · Alternance BUT</p>
+    </div>
+  </div>
+</section>
+
+<section class="section-sm">
+  <div class="cta-block">
+    <h2>Prêt à sécuriser votre infrastructure ?</h2>
+    <p>Je suis à l'écoute de nouveaux défis en architecture Cloud et SI.</p>
+    <div class="btn-group">
+      <a href="contact.html" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Démarrer une conversation</a>
+      <a href="projets.html" class="btn btn-outline"><i class="fas fa-folder"></i> Voir mes projets</a>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-logo">Nicolas<span class="dot">.SI</span></div>
+      <p>Expert Architecture SI — Cloud, Infrastructure &amp; Sécurité.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <ul>
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="parcours.html">Parcours</a></li>
+        <li><a href="projets.html">Projets</a></li>
+        <li><a href="contact.html">Contact</a></li>
       </ul>
-    </section>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <div class="social-links">
+        <a href="https://www.linkedin.com/in/nicolas-blin-6a5135218/" class="social-btn" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://github.com/nblinpro" class="social-btn" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="mailto:nicolas.blin.pro1@gmail.com" class="social-btn" aria-label="Email"><i class="far fa-envelope"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Nicolas Blin — Expert Architecture SI</p>
+    <span class="mono">M1 Cloud · BUT R&amp;T</span>
+  </div>
+</footer>
 
-    <section id="contact" class="section container">
-      <h2>Contact</h2>
-      <p>N'hésitez pas à me contacter :</p>
-      <ul class="contact-list">
-        <li><a href="mailto:nblin@innosys.fr">nblin@innosys.fr</a></li>
-        <li><a href="https://github.com/nblinpro" target="_blank" rel="noopener">GitHub</a></li>
-        <li><a href="#" target="_blank" rel="noopener">LinkedIn</a></li>
-      </ul>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <p class="container">© <span id="year"></span> Nicolas Lin — Construit avec HTML, CSS &amp; JS, hébergé sur GitHub Pages.</p>
-  </footer>
-
-  <script src="js/script.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

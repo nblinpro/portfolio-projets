@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monitoring Prometheus & Grafana — Nicolas Blin</title>
+  <meta name="description" content="Déploiement IaC Prometheus/Grafana avec Ansible et Docker Compose — supervision des services critiques, node_exporter, cAdvisor. Mastère M1 Innosys.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="ambient-bg"></div>
+
+<header class="site-header">
+  <a href="../index.html" class="logo">Nicolas<span class="dot">.SI</span></a>
+  <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <nav class="site-nav" id="siteNav">
+    <ul>
+      <li><a href="../index.html">Accueil</a></li>
+      <li><a href="../parcours.html">Parcours</a></li>
+      <li><a href="../projets.html">Projets</a></li>
+      <li><a href="../contact.html" class="nav-cta">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<nav class="breadcrumb">
+  <a href="index.html">Mastère</a>
+  <i class="fas fa-chevron-right"></i>
+  <span>Stack Monitoring Prometheus/Grafana</span>
+</nav>
+
+<div class="page-hero">
+  <span class="hero-tag"><i class="fas fa-chart-line"></i> Mastère M1 · Alternance Innosys</span>
+  <h1>Monitoring <span class="gradient-text">Prometheus &amp; Grafana</span></h1>
+  <p>Documentation technique du déploiement IaC pour la surveillance des services critiques — provisioning automatisé, stack Prometheus / Grafana / cAdvisor, configuration du scrape.</p>
+</div>
+
+<div class="page-wrapper">
+
+  <section class="section">
+    <div class="section-header">
+      <span class="section-tag"><i class="fas fa-diagram-project"></i> Architecture</span>
+      <h2>Architecture du <span class="accent">stack de supervision</span></h2>
+      <p>Une VM dédiée, provisionnée par Ansible, exécute la stack de monitoring en Docker Compose. Prometheus scrape les métriques exposées par cAdvisor (conteneurs) et node_exporter (hôtes), Grafana consomme Prometheus comme datasource.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="card card--accent">
+        <h3>VM Monitoring</h3>
+        <p>Docker Compose orchestrant Prometheus (:9090), Grafana (:3000) et cAdvisor (:8080), provisionnés via Ansible (install_base.yaml : Docker CE + open-vm-tools).</p>
+      </div>
+      <div class="card card--accent">
+        <h3>Hôtes supervisés</h3>
+        <p>Host 1 — 192.168.80.151 : node_exporter :9100 + apache_exporter :9117. Host 2 — 192.168.80.152 : node_exporter :9100.</p>
+      </div>
+      <div class="card card--accent">
+        <h3>Flux de scrape</h3>
+        <p>Prometheus interroge cAdvisor (:8080), node_exporter (:9100) local et distant, et apache_exporter (:9117) sur Host 1. Grafana lit Prometheus comme datasource et l'utilisateur accède à Grafana en HTTP :3000.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="section-header">
+      <span class="section-tag"><i class="fas fa-terminal"></i> Étape 1</span>
+      <h2>Provisioning automatisé <span class="accent">(Ansible)</span></h2>
+      <p>Un playbook unique (install_base.yaml) prépare la VM cible : mise à jour APT, installation d'open-vm-tools, ajout du dépôt officiel Docker et installation de docker-ce.</p>
+    </div>
+
+    <div class="detail-block">
+      <h3>nicolas@promfana:~/ansible</h3>
+      <div class="code-block">
+        <pre>---
+- name: Installation Docker et Open VM Tools sur la machine locale
+  hosts: localhost
+  connection: local
+  become: yes
+
+  tasks:
+
+    - name: Mettre à jour l'APT
+      apt:
+        update_cache: yes
+
+    - name: Installer open-vm-tools
+      apt:
+        name: open-vm-tools
+        state: present
+
+    - name: Installer dépendances pour Docker
+      apt:
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+        state: present
+
+    - name: Ajouter la clé GPG Docker
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Ajouter le dépôt Docker
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        state: present
+
+    - name: Mise à jour APT après ajout dépôt Docker
+      apt:
+        update_cache: yes
+
+    - name: Installer docker-ce
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: S'assurer que Docker démarre
+      service:
+        name: docker
+        enabled: yes
+        state: started</pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="section-header">
+      <span class="section-tag"><i class="fab fa-docker"></i> Étape 2</span>
+      <h2>Stack de monitoring <span class="accent">(Docker Compose)</span></h2>
+      <p>Quatre services conteneurisés partagent un réseau bridge dédié : prometheus, grafana, cadvisor et nodeexporter (en network_mode host pour accéder aux métriques système).</p>
+    </div>
+
+    <div class="detail-block">
+      <h3>nicolas@promfana:~/monitoring</h3>
+      <div class="code-block">
+        <pre>version: "3.8"
+
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - monitor
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - monitor
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - monitor
+
+  nodeexporter:
+    image: prom/node-exporter
+    container_name: nodeexporter
+    ports:
+      - 9100:9100
+    restart: unless-stopped
+    pid: "host"
+    network_mode: host
+    command:
+      - '--path.rootfs=/'
+
+networks:
+  monitor:
+    driver: bridge</pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="section-header">
+      <span class="section-tag"><i class="fas fa-search"></i> Étape 3</span>
+      <h2>Configuration du <span class="accent">scrape (Prometheus)</span></h2>
+      <p>Intervalle de scrape global à 5 secondes, avec quatre jobs : prometheus (auto-monitoring), cadvisor, nodeexporter (les deux hôtes) et apache-client (apache_exporter sur Host 1).</p>
+    </div>
+
+    <div class="detail-block">
+      <h3>nicolas@promfana:~/monitoring/prometheus.yml</h3>
+      <div class="code-block">
+        <pre>global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["prometheus:9090"]
+
+  - job_name: "cadvisor"
+    static_configs:
+      - targets: ["cadvisor:8080"]
+
+  - job_name: "nodeexporter"
+    static_configs:
+      - targets: ["192.168.80.152:9100"]
+      - targets: ["192.168.80.151:9100"]
+
+  - job_name: "apache-client"
+    static_configs:
+      - targets: ["192.168.80.151:9117"]</pre>
+      </div>
+    </div>
+
+    <div class="info-callout">
+      <p>La configuration expose 4 jobs de scrape distincts couvrant Prometheus lui-même, cAdvisor, node_exporter sur les deux hôtes supervisés et apache_exporter sur Host 1.</p>
+    </div>
+
+    <div class="tags">
+      <span class="tag tag--accent">Prometheus</span>
+      <span class="tag tag--accent">Grafana</span>
+      <span class="tag tag--accent">Ansible</span>
+      <span class="tag tag--accent">Docker Compose</span>
+      <span class="tag tag--accent">cAdvisor</span>
+      <span class="tag tag--accent">node_exporter</span>
+      <span class="tag tag--accent">apache_exporter</span>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="cta-block">
+      <h2>Explorer les autres projets du Mastère</h2>
+      <p>Retour à la vue d'ensemble du Mastère Expert Cloud, Infrastructure &amp; Sécurité, ou prise de contact directe.</p>
+      <div class="btn-group">
+        <a href="index.html" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Retour au Mastère</a>
+        <a href="../contact.html" class="btn btn-outline"><i class="fas fa-envelope"></i> Me contacter</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-logo">Nicolas<span class="dot">.SI</span></div>
+      <p>Mastère Expert Cloud, Infrastructure &amp; Sécurité · Ynov Campus.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Mastère</h4>
+      <ul>
+        <li><a href="index.html">Vue d'ensemble</a></li>
+        <li><a href="monitoring.html">Prometheus/Grafana</a></li>
+        <li><a href="laravel.html">Laravel via Ansible</a></li>
+        <li><a href="samba.html">Samba</a></li>
+        <li><a href="openstack.html">OpenStack</a></li>
+        <li><a href="gridbook.html">GridBook</a></li>
+        <li><a href="virtualisation.html">Infra HA</a></li>
+        <li><a href="rapidsoft-cicd.html">RapidSoft DevSecOps</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <div class="social-links">
+        <a href="https://www.linkedin.com/in/nicolas-blin-6a5135218/" class="social-btn" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://github.com/nblinpro" class="social-btn" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="mailto:nicolas.blin.pro1@gmail.com" class="social-btn" aria-label="Email"><i class="far fa-envelope"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Nicolas Blin — Expert Architecture SI</p>
+    <span class="mono">Mastère</span>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+</body>
+</html>

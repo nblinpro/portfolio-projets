@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Déploiement Laravel via Ansible | Nicolas Blin</title>
+  <meta name="description" content="Automatisation du déploiement d'une application Laravel avec Ansible : rôles modulaires, gestion des secrets via Ansible Vault, sécurité SELinux et Firewalld sur Rocky Linux 9.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="ambient-bg"></div>
+
+<header class="site-header">
+  <a href="../index.html" class="logo">Nicolas<span class="dot">.SI</span></a>
+  <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <nav class="site-nav" id="siteNav">
+    <ul>
+      <li><a href="../index.html">Accueil</a></li>
+      <li><a href="../parcours.html">Parcours</a></li>
+      <li><a href="../projets.html">Projets</a></li>
+      <li><a href="../contact.html" class="nav-cta">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<nav class="breadcrumb">
+  <a href="index.html">Mastère</a>
+  <i class="fas fa-chevron-right"></i>
+  <span>Déploiement Automatisé Laravel via Ansible</span>
+</nav>
+
+<div class="page-hero">
+  <span class="hero-tag"><i class="fas fa-robot"></i> Mastère M1 · Alternance Innosys · Infrastructure as Code</span>
+  <h1>Déploiement Automatisé <span class="gradient-text">Laravel via Ansible</span></h1>
+  <p>Documentation technique du projet d'automatisation : gestion de configuration, déploiement sécurisé via Ansible Vault, rôles modulaires et durcissement du serveur sur Rocky Linux 9.</p>
+</div>
+
+<div class="page-wrapper">
+
+  <section class="section">
+    <div class="section-header">
+      <div class="section-tag"><i class="fas fa-info-circle"></i> Contexte</div>
+      <h2>Architecture <span class="accent">du projet</span></h2>
+      <p>Un playbook Ansible unique orchestre le déploiement complet d'une application Laravel sur deux serveurs Rocky Linux 9 : un serveur base de données et un serveur web, avec gestion centralisée des secrets.</p>
+    </div>
+    <div class="grid-2">
+      <div class="card card--accent">
+        <h3><i class="fas fa-cubes"></i> Stack technique</h3>
+        <ul class="check-list">
+          <li><i class="fas fa-check"></i><span>PHP 8.3 installé via le dépôt REMI</span></li>
+          <li><i class="fas fa-check"></i><span>MySQL Server</span></li>
+          <li><i class="fas fa-check"></i><span>Apache (httpd) avec VirtualHost généré en Jinja2</span></li>
+          <li><i class="fas fa-check"></i><span>Composer, gestionnaire de dépendances PHP</span></li>
+          <li><i class="fas fa-check"></i><span>Laravel, framework applicatif</span></li>
+          <li><i class="fas fa-check"></i><span>SELinux et Firewalld pour le durcissement</span></li>
+        </ul>
+      </div>
+      <div class="card card--accent">
+        <h3><i class="fas fa-lock"></i> Sécurité &amp; secrets</h3>
+        <ul class="check-list">
+          <li><i class="fas fa-check"></i><span>Ansible Vault pour chiffrer les identifiants de base de données</span></li>
+          <li><i class="fas fa-check"></i><span>Permissions <code>700</code> / <code>600</code> sur les dossiers <code>group_vars</code></span></li>
+          <li><i class="fas fa-check"></i><span>Contexte SELinux <code>httpd_sys_rw_content_t</code> sur storage, cache et .env</span></li>
+          <li><i class="fas fa-check"></i><span>Firewalld : ouverture des seuls ports 80, 443 et 3306</span></li>
+          <li><i class="fas fa-check"></i><span>Accès MySQL restreint à l'adresse IP du serveur web</span></li>
+        </ul>
+        <div class="tags">
+          <span class="tag tag--accent">Ansible</span>
+          <span class="tag tag--accent">Ansible Vault</span>
+          <span class="tag tag--accent">Laravel</span>
+          <span class="tag tag--accent">Rocky Linux 9</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="detail-block">
+      <h2><i class="fas fa-folder-tree"></i> 1. Arborescence du projet</h2>
+      <p>Structure du dépôt <code>mon_projet_ansible/</code> : inventaire, playbook principal, variables par groupe et rôles dédiés à chaque brique de l'infrastructure.</p>
+    </div>
+    <div class="code-block">
+<pre>mon_projet_ansible/
+│
+├── hosts.ini                    # Inventaire
+├── site.yml                     # Playbook principal
+│
+├── group_vars/                  # Variables partagées
+│   ├── db/
+│   │   └── vault.yml
+│   └── web/
+│       ├── vault.yml
+│       └── vars.yml
+│
+└── roles/
+    ├── database/
+    │   ├── defaults/main.yml
+    │   └── tasks/main.yml
+    ├── php/tasks/main.yml
+    ├── apache/
+    │   ├── tasks/main.yml
+    │   ├── handlers/main.yml
+    │   └── templates/laravel.conf.j2
+    ├── composer/tasks/main.yml
+    ├── laravel/tasks/main.yml
+    ├── selinux/tasks/main.yml
+    └── firewall/tasks/main.yml</pre>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="detail-block">
+      <h2><i class="fas fa-cog"></i> 2. Configuration racine</h2>
+      <h3>Fichier d'inventaire — hosts.ini</h3>
+    </div>
+    <div class="code-block">
+<pre>[web]
+weblaravel ansible_host=192.168.80.167 ansible_user=innosys
+
+[db]
+bddlaravel ansible_host=192.168.80.168 ansible_user=innosys</pre>
+    </div>
+    <div class="detail-block">
+      <h3>Playbook principal — site.yml</h3>
+    </div>
+    <div class="code-block">
+<pre>---
+- name: Déploiement Base de Données
+  hosts: db
+  become: yes
+  roles:
+    - database
+
+- name: Déploiement Serveur Web
+  hosts: web
+  become: yes
+  roles:
+    - php
+    - apache
+    - composer
+    - laravel
+    - selinux
+    - firewall</pre>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="detail-block">
+      <h2><i class="fas fa-lock"></i> 3. Variables &amp; sécurité (Vault)</h2>
+      <h3>Configuration DB — group_vars/db/vault.yml</h3>
+      <p>Création du coffre-fort : <code>sudo ansible-vault create group_vars/db/vault.yml</code></p>
+    </div>
+    <div class="code-block">
+<pre># vault.yml
+mysql_root_password: "RootPass123!"
+laravel_db: "laravel_db"
+laravel_user: "laravel_user"
+laravel_password: "LaravelPass123!"</pre>
+    </div>
+
+    <div class="detail-block">
+      <h3>Configuration Web — group_vars/web/</h3>
+      <p>Création du coffre-fort : <code>sudo ansible-vault create group_vars/web/vault.yml</code></p>
+    </div>
+    <div class="code-block">
+<pre># vault.yml
+db_password: "LaravelPass123!"
+db_name: "laravel_db"
+db_user: "laravel_user"
+
+# vars.yml
+app_path: /var/www/laravel
+db_host: 192.168.80.168
+db_port: 3306</pre>
+    </div>
+
+    <div class="detail-block">
+      <h3>Sécurisation des permissions</h3>
+    </div>
+    <div class="code-block">
+<pre>sudo chown -R nicolas:nicolas group_vars
+
+# Sécurisation dossier DB
+sudo chmod 700 group_vars/db
+sudo chmod 600 group_vars/db/vault.yml
+
+# Sécurisation dossier Web
+sudo chmod 700 group_vars/web
+sudo chmod 600 group_vars/web/vault.yml</pre>
+    </div>
+
+    <div class="info-callout">
+      <p><i class="fas fa-shield-alt"></i> Les fichiers Vault ne sont jamais versionnés ou lus en clair : les permissions Unix restreignent leur accès au seul utilisateur de déploiement.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="detail-block">
+      <h2><i class="fas fa-database"></i> 4. Rôle : Database</h2>
+      <h3>roles/database/defaults/main.yml</h3>
+    </div>
+    <div class="code-block">
+<pre>---
+web_server_ip: "192.168.80.167"</pre>
+    </div>
+
+    <div class="detail-block">
+      <h3>roles/database/tasks/main.yml</h3>
+      <p>Installation de MySQL Server, sécurisation initiale (suppression des comptes anonymes et de la base de test), création de la base et d'un utilisateur Laravel dont l'accès est restreint à l'IP du serveur web, puis ouverture du port 3306 sur Firewalld.</p>
+    </div>
+    <div class="code-block">
+<pre>---
+- name: Installer MySQL server, client et PyMySQL
+  dnf:
+    name:
+      - mysql-server
+      - mysql
+      - python3-PyMySQL
+    state: present
+
+- name: Activer et démarrer MySQL
+  systemd:
+    name: mysqld
+    state: started
+    enabled: yes
+
+- name: Définir le mot de passe root MySQL
+  mysql_user:
+    login_user: root
+    login_password: ""
+    user: root
+    password: "{{ mysql_root_password }}"
+    host_all: yes
+    check_implicit_admin: yes
+  ignore_errors: yes
+
+- name: Supprimer les utilisateurs anonymes
+  mysql_user:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    name: ''
+    host_all: yes
+    state: absent
+
+- name: Supprimer la base de test
+  mysql_db:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    name: test
+    state: absent
+
+- name: Créer la base Laravel
+  mysql_db:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    name: "{{ laravel_db }}"
+    state: present
+    encoding: utf8mb4
+    collation: utf8mb4_unicode_ci
+
+- name: Créer l'utilisateur Laravel (Autorisé depuis le serveur Web)
+  mysql_user:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    name: "{{ laravel_user }}"
+    password: "{{ laravel_password }}"
+    host: "{{ web_server_ip }}"
+    priv: "{{ laravel_db }}.*:ALL"
+    state: present
+
+- name: Ouvrir le port MySQL (Firewall)
+  firewalld:
+    port: 3306/tcp
+    permanent: yes
+    state: enabled
+
+- name: Recharger firewalld
+  systemd:
+    name: firewalld
+    state: restarted</pre>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="detail-block">
+      <h2><i class="fab fa-php"></i> 5. Rôle : PHP</h2>
+      <h3>roles/php/tasks/main.yml</h3>
+      <p>Activation du dépôt REMI et du module PHP 8.3, puis installation de PHP et des extensions requises par Laravel (mysqlnd, xml, mbstring, curl, opcache...).</p>
+    </div>
+    <div class="code-block">
+<pre>---
+- name: Installer dnf-plugins-core
+  dnf:
+    name: dnf-plugins-core
+    state: present
+
+- name: Installer EPEL Release
+  dnf:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+    state: present
+    disable_gpg_check: yes
+
+- name: Activer repo REMI et module PHP 8.3
+  shell: |
+    dnf install -y https://rpms.remirepo.net/enterprise/remi-release-9.rpm
+    dnf module reset php -y
+    dnf module enable php:remi-8.3 -y
+  args:
+    creates: /etc/yum.repos.d/remi.repo
+
+- name: Installer PHP et extensions
+  dnf:
+    name:
+      - php
+      - php-cli
+      - php-common
+      - php-fpm
+      - php-mysqlnd
+      - php-xml
+      - php-json
+      - php-zip
+      - php-gd
+      - php-mbstring
+      - php-curl
+      - php-opcache
+      - git
+      - unzip
+      - curl
+    state: present</pre>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="detail-block">
+      <h2><i class="fas fa-server"></i> 6. Rôle : Apache</h2>
+      <h3>roles/apache/tasks/main.yml</h3>
+    </div>
+    <div class="code-block">
+<pre>---
+- name: Installer Apache
+  dnf:
+    name: httpd
+    state: present
+
+- name: Démarrer Apache
+  systemd:
+    name: httpd
+    enabled: yes
+    state: started
+
+- name: Déployer VirtualHost Laravel
+  template:
+    src: laravel.conf.j2
+    dest: /etc/httpd/conf.d/laravel.conf
+  notify: Restart Apache</pre>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="detail-block">
+          <h3>roles/apache/handlers/main.yml</h3>
+        </div>
+        <div class="code-block">
+<pre>---
+- name: Restart Apache
+  systemd:
+    name: httpd
+    state: restarted</pre>
+        </div>
+      </div>
+      <div>
+        <div class="detail-block">
+          <h3>roles/apache/templates/laravel.conf.j2</h3>
+        </div>
+        <div class="code-block">
+<pre>&lt;VirtualHost *:80&gt;
+    DocumentRoot {{ app_path }}/public
+
+    &lt;Directory {{ app_path }}/public&gt;
+        AllowOverride All
+        Require all granted
+    &lt;/Directory&gt;
+
+    ErrorLog /var/log/httpd/laravel_error.log
+    CustomLog /var/log/httpd/laravel_access.log combined
+&lt;/VirtualHost&gt;</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="detail-block">
+      <h2><i class="fas fa-box"></i> 7. Rôle : Composer</h2>
+      <h3>roles/composer/tasks/main.yml</h3>
+    </div>
+    <div class="code-block">
+<pre>---
+- name: Télécharger Composer
+  get_url:
+    url: https://getcomposer.org/download/latest-stable/composer.phar
+    dest: /usr/local/bin/composer
+    mode: "0755"</pre>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="detail-block">
+      <h2><i class="fas fa-code-branch"></i> 8. Rôle : Laravel</h2>
+      <h3>roles/laravel/tasks/main.yml</h3>
+      <p>Installation de Laravel via Composer, attribution des permissions Apache, droits d'écriture sur storage et cache, génération de la clé applicative, configuration du <code>.env</code> et exécution des migrations en contexte apache.</p>
+    </div>
+    <div class="code-block">
+<pre>---
+- name: Créer dossier application
+  file:
+    path: "{{ app_path }}"
+    state: directory
+    mode: "0755"
+
+- name: Installer Laravel
+  command: /usr/local/bin/composer create-project laravel/laravel .
+  args:
+    chdir: "{{ app_path }}"
+    creates: "{{ app_path }}/artisan"
+
+- name: Permissions Apache
+  file:
+    path: "{{ app_path }}"
+    recurse: yes
+    owner: apache
+    group: apache
+
+- name: Droits écriture storage/cache
+  file:
+    path: "{{ item }}"
+    recurse: yes
+    mode: "0775"
+  loop:
+    - "{{ app_path }}/storage"
+    - "{{ app_path }}/bootstrap/cache"
+
+- name: Générer clé Laravel
+  command: sudo -u apache php artisan key:generate
+  args:
+    chdir: "{{ app_path }}"
+
+- name: Configurer .env
+  lineinfile:
+    path: "{{ app_path }}/.env"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - { regexp: '^DB_CONNECTION=', line: 'DB_CONNECTION=mysql' }
+    - { regexp: '^DB_HOST=',       line: 'DB_HOST={{ db_host }}' }
+    - { regexp: '^DB_PORT=',       line: 'DB_PORT={{ db_port }}' }
+    - { regexp: '^DB_DATABASE=',   line: 'DB_DATABASE={{ db_name }}' }
+    - { regexp: '^DB_USERNAME=',   line: 'DB_USERNAME={{ db_user }}' }
+    - { regexp: '^DB_PASSWORD=',   line: 'DB_PASSWORD={{ db_password }}' }
+
+- name: Exécuter migrations
+  command: sudo -u apache php artisan migrate --force
+  args:
+    chdir: "{{ app_path }}"</pre>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="detail-block">
+      <h2><i class="fas fa-shield-alt"></i> 9. Rôles : sécurité (SELinux &amp; Firewall)</h2>
+    </div>
+    <div class="grid-2">
+      <div>
+        <div class="detail-block">
+          <h3>roles/selinux/tasks/main.yml</h3>
+        </div>
+        <div class="code-block">
+<pre>---
+- name: Autoriser connexion réseau Apache
+  command: setsebool -P httpd_can_network_connect on
+
+- name: Appliquer contexte SELinux
+  command: chcon -R -t httpd_sys_rw_content_t {{ item }}
+  loop:
+    - "{{ app_path }}/storage"
+    - "{{ app_path }}/bootstrap/cache"
+    - "{{ app_path }}/.env"</pre>
+        </div>
+      </div>
+      <div>
+        <div class="detail-block">
+          <h3>roles/firewall/tasks/main.yml</h3>
+        </div>
+        <div class="code-block">
+<pre>---
+- name: Ouvrir ports HTTP/HTTPS
+  firewalld:
+    port: "{{ item }}/tcp"
+    permanent: yes
+    state: enabled
+  loop: [80, 443]</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="section-header">
+      <div class="section-tag"><i class="fas fa-graduation-cap"></i> Compétences acquises</div>
+      <h2>Ce que <span class="accent">ce projet m'a apporté</span></h2>
+    </div>
+    <div class="grid-3">
+      <div class="card card--accent">
+        <ul class="check-list">
+          <li><i class="fas fa-check"></i><span>Structuration d'un projet Ansible en rôles modulaires</span></li>
+          <li><i class="fas fa-check"></i><span>Gestion des secrets avec Ansible Vault</span></li>
+          <li><i class="fas fa-check"></i><span>Sécurisation des fichiers via chmod 700/600</span></li>
+          <li><i class="fas fa-check"></i><span>Déploiement automatisé MySQL avec utilisateur restreint</span></li>
+        </ul>
+      </div>
+      <div class="card card--accent">
+        <ul class="check-list">
+          <li><i class="fas fa-check"></i><span>Installation de PHP 8.3 via le dépôt REMI sur Rocky Linux 9</span></li>
+          <li><i class="fas fa-check"></i><span>Configuration Apache avec VirtualHost Jinja2 dynamique</span></li>
+          <li><i class="fas fa-check"></i><span>Déploiement Laravel via Composer et configuration .env</span></li>
+          <li><i class="fas fa-check"></i><span>Exécution des migrations Artisan en contexte Apache</span></li>
+        </ul>
+      </div>
+      <div class="card card--accent">
+        <ul class="check-list">
+          <li><i class="fas fa-check"></i><span>Hardening SELinux pour storage, cache et .env</span></li>
+          <li><i class="fas fa-check"></i><span>Gestion du pare-feu Firewalld via Ansible</span></li>
+          <li><i class="fas fa-check"></i><span>Usage des handlers Ansible pour redémarrer les services</span></li>
+          <li><i class="fas fa-check"></i><span>Infrastructure as Code reproductible et idempotente</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-block">
+    <h2>Explorer les autres projets du Mastère</h2>
+    <p>Monitoring, Samba, OpenStack, GridBook et infrastructure haute disponibilité — retrouvez l'ensemble des réalisations du Mastère Cloud, Infrastructure &amp; Sécurité.</p>
+    <div class="btn-group">
+      <a href="index.html" class="btn btn-primary"><i class="fas fa-arrow-left"></i> Vue d'ensemble du Mastère</a>
+      <a href="../contact.html" class="btn btn-outline"><i class="fas fa-envelope"></i> Me contacter</a>
+    </div>
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div class="footer-logo">Nicolas<span class="dot">.SI</span></div>
+      <p>Mastère Expert Cloud, Infrastructure &amp; Sécurité · Ynov Campus.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Mastère</h4>
+      <ul>
+        <li><a href="index.html">Vue d'ensemble</a></li>
+        <li><a href="monitoring.html">Prometheus/Grafana</a></li>
+        <li><a href="laravel.html">Laravel via Ansible</a></li>
+        <li><a href="samba.html">Samba</a></li>
+        <li><a href="openstack.html">OpenStack</a></li>
+        <li><a href="gridbook.html">GridBook</a></li>
+        <li><a href="virtualisation.html">Infra HA</a></li>
+        <li><a href="rapidsoft-cicd.html">RapidSoft DevSecOps</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <div class="social-links">
+        <a href="https://www.linkedin.com/in/nicolas-blin-6a5135218/" class="social-btn" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://github.com/nblinpro" class="social-btn" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="mailto:nicolas.blin.pro1@gmail.com" class="social-btn" aria-label="Email"><i class="far fa-envelope"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Nicolas Blin — Expert Architecture SI</p>
+    <span class="mono">Mastère</span>
+  </div>
+</footer>
+
+<script src="../js/main.js"></script>
+</body>
+</html>
