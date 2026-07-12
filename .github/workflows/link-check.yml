@@ -20,7 +20,9 @@ jobs:
           args: >-
             --offline
             --no-progress
+            --verbose
             --exclude-mail
             --exclude-path mastere/openstack.html
-            './**/*.html'
+            --exclude-path ./mastere/openstack.html
+            '**/*.html'
           fail: true
