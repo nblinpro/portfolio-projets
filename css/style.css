@@ -80,8 +80,11 @@ ul { list-style: none; }
 .logo { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.15rem; color: var(--text); display: flex; align-items: center; gap: 2px; }
 .logo .dot { color: var(--accent); }
 
-.hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 0.5rem; z-index: 950; }
-.hamburger span { width: 22px; height: 2px; background: var(--text); display: block; border-radius: 2px; transition: var(--transition); }
+.hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 0.5rem; z-index: 950; }
+.hamburger span { width: 22px; height: 2px; background: var(--text); display: block; border-radius: 2px; transition: var(--transition); transform-origin: center; }
+.hamburger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.is-open span:nth-child(2) { opacity: 0; }
+.hamburger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 .site-nav ul { display: flex; gap: 2rem; align-items: center; }
 .site-nav a { font-size: 0.85rem; font-weight: 500; color: var(--text-muted); transition: color var(--transition); padding: 6px 0; position: relative; }
@@ -114,6 +117,8 @@ ul { list-style: none; }
 /* ── HERO (home) ── */
 .hero { padding: 5.5rem 8% 4rem; text-align: center; }
 .hero-inner { max-width: 720px; margin: 0 auto; }
+.hero-avatar { width: 120px; height: 120px; margin: 0 auto 1.5rem; }
+.hero-avatar img { width: 100%; height: 100%; border-radius: 50%; }
 .hero-tag { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(45, 212, 167, 0.25); border-radius: 999px; padding: 0.45rem 1rem; font-size: 0.8rem; font-weight: 600; margin-bottom: 1.5rem; }
 .hero h1 { font-size: clamp(2.25rem, 5vw, 3.5rem); line-height: 1.1; margin-bottom: 1.25rem; }
 .gradient-text { background: linear-gradient(120deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; }

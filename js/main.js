@@ -7,12 +7,14 @@ const siteNav = document.getElementById('siteNav');
 if (hamburger && siteNav) {
   hamburger.addEventListener('click', () => {
     const isOpen = siteNav.classList.toggle('open');
+    hamburger.classList.toggle('is-open', isOpen);
     hamburger.setAttribute('aria-expanded', String(isOpen));
   });
 
   siteNav.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', () => {
       siteNav.classList.remove('open');
+      hamburger.classList.remove('is-open');
       hamburger.setAttribute('aria-expanded', 'false');
     });
   });
