@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nicolas Lin — Portfolio</title>
+  <meta name="description" content="Portfolio de Nicolas Lin — projets, compétences et contact.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <nav class="nav container">
+      <a href="#top" class="logo">NL</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">À propos</a></li>
+        <li><a href="#projects">Projets</a></li>
+        <li><a href="#skills">Compétences</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="theme-toggle" id="themeToggle" aria-label="Basculer le thème">🌙</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="top" class="hero container">
+      <p class="hero-eyebrow">Bonjour, je suis</p>
+      <h1>Nicolas Lin</h1>
+      <p class="hero-subtitle">Titre / rôle à préciser — ex. Développeur Full-Stack</p>
+      <p class="hero-text">
+        Courte description de vous en une ou deux phrases : ce que vous faites,
+        ce qui vous passionne, ou ce que vous cherchez (stage, emploi, projets freelance...).
+      </p>
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-primary">Voir mes projets</a>
+        <a href="#contact" class="btn btn-secondary">Me contacter</a>
+      </div>
+    </section>
+
+    <section id="about" class="section container">
+      <h2>À propos</h2>
+      <p>
+        Présentez ici votre parcours : formation, expériences marquantes, ce qui vous
+        distingue. Deux ou trois paragraphes suffisent pour un portfolio efficace.
+      </p>
+    </section>
+
+    <section id="projects" class="section container">
+      <h2>Projets</h2>
+      <div class="project-grid">
+
+        <article class="project-card">
+          <div class="project-card-image" aria-hidden="true"></div>
+          <div class="project-card-body">
+            <h3>Nom du projet 1</h3>
+            <p>Description courte : le problème résolu, les technologies utilisées.</p>
+            <div class="project-tags">
+              <span class="tag">HTML</span>
+              <span class="tag">CSS</span>
+              <span class="tag">JavaScript</span>
+            </div>
+            <div class="project-links">
+              <a href="#" target="_blank" rel="noopener">Démo</a>
+              <a href="#" target="_blank" rel="noopener">Code</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-card-image" aria-hidden="true"></div>
+          <div class="project-card-body">
+            <h3>Nom du projet 2</h3>
+            <p>Description courte : le problème résolu, les technologies utilisées.</p>
+            <div class="project-tags">
+              <span class="tag">Python</span>
+              <span class="tag">API</span>
+            </div>
+            <div class="project-links">
+              <a href="#" target="_blank" rel="noopener">Démo</a>
+              <a href="#" target="_blank" rel="noopener">Code</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-card-image" aria-hidden="true"></div>
+          <div class="project-card-body">
+            <h3>Nom du projet 3</h3>
+            <p>Description courte : le problème résolu, les technologies utilisées.</p>
+            <div class="project-tags">
+              <span class="tag">React</span>
+              <span class="tag">Node.js</span>
+            </div>
+            <div class="project-links">
+              <a href="#" target="_blank" rel="noopener">Démo</a>
+              <a href="#" target="_blank" rel="noopener">Code</a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section id="skills" class="section container">
+      <h2>Compétences</h2>
+      <ul class="skills-list">
+        <li>HTML / CSS / JavaScript</li>
+        <li>À compléter</li>
+        <li>À compléter</li>
+        <li>À compléter</li>
+      </ul>
+    </section>
+
+    <section id="contact" class="section container">
+      <h2>Contact</h2>
+      <p>N'hésitez pas à me contacter :</p>
+      <ul class="contact-list">
+        <li><a href="mailto:nblin@innosys.fr">nblin@innosys.fr</a></li>
+        <li><a href="https://github.com/nblinpro" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="#" target="_blank" rel="noopener">LinkedIn</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p class="container">© <span id="year"></span> Nicolas Lin — Construit avec HTML, CSS &amp; JS, hébergé sur GitHub Pages.</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
